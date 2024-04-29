@@ -14,6 +14,7 @@ def socket_to_screen(socket, sock_addr):
 	bytes_read = 0
 
 	"""
+ 
 	 Loop for as long as data is received (0-length data means the connection was closed by
 	 the client), and newline is not in the data (newline means the complete input from the
 	 other side was processed, as the assumption is that the client will send one line at

@@ -12,6 +12,7 @@ srv_addr = (sys.argv[1], int(sys.argv[2])) # sys.argv[x] is the x'th argument on
 srv_addr_str = str(srv_addr)
 
 """ 
+
  Enclose the connect() call in a try-except block to catch
  exceptions related to invalid/missing command-line arguments, 
  port number out of range, etc. Ideally, these errors should 

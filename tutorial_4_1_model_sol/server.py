@@ -1,16 +1,15 @@
 import sys
 import socket
+from common_methods import socket_to_memory
 
 def parse_port_arg():
-    # Check if the correct number of arguments are provided
+
     if len(sys.argv) != 2:
         print("Usage: python server.py <port number>")
         sys.exit(1)
 
-    # Get the port number from the command line argument
     port_num = int(sys.argv[1])
 
-    # Check if the port number is within the valid range
     if not (0 < port_num < 65536):
         print("Port number must be between 1 and 65535")
         sys.exit(1)
@@ -26,4 +25,17 @@ try:
 except Exception as e:
     print(e)
     exit(1)
-    #
+    
+    
+while True:
+    try:
+        print("Waiting for new client... ")
+        client_socket, client_address = server_socket.accept()
+        cli_addr_str = str(client_address) 
+        print("Client " + cli_addr_str + " connected. Now chatting...")
+        
+        while True:
+            bytes_saved = socket_to_memory(client_socket, cli_addr_str)
+            
+    finally:
+        client_socket.close()

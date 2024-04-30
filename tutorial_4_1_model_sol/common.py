@@ -29,6 +29,7 @@ def socket_to_screen(socket, sock_addr):
 		 will be delivered in one recv() call.
 		"""
 		data = socket.recv(4096)
+		print(data)
 
 		print(data.decode(), end="") # Use end="" to avoid adding a newline per print() call
 		bytes_read += len(data)

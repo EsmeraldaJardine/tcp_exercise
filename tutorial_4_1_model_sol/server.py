@@ -38,7 +38,8 @@ try:
             request = client_socket.recv(50).decode()
             if request.strip() == "list":
                 response = str(os.listdir())
-                client_socket.sendall(response.encode())
+                client_socket.send(response.encode())
+                exit(0)
             elif request.strip()[:3] == "put":
                 print("request type: ", request.strip()[:3])
                 filename_length = request.strip()[3:7]
@@ -47,17 +48,10 @@ try:
                 print("filename ", filename)
                 contents = str(request.strip()[msg_start_index:])
                 file_path = get_path(filename, "server_data", False) + "/" + filename
-                contents = client_socket.recv(1024).decode("utf-8")
                 new_file = write_to_file(file_path, contents)
-                #file = open(file_path, "w")
-                
-				
-                #file.write("ok")
                 client_socket.send("File received".encode())
-            #bytes_saved = socket_to_memory(client_socket, cli_addr_str)
-            #if bytes_saved == 0:
-               # print("Client closed connection.")
-              #  exit(0)
+                exit(0)
+
             
 finally:
     client_socket.close()

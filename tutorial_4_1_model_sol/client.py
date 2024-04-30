@@ -1,6 +1,6 @@
 import sys
 import socket
-from common_methods import handle_request_client
+from common_methods import handle_request_client, send_one_message
 
 print("Make sure this is ran as python client.py <hostname> <port> put <filename>")
 server_addr = (sys.argv[1], int(sys.argv[2])) 
@@ -22,13 +22,9 @@ except Exception as e:
     
 try:
     while True:
-        client_socket.sendall(request_type_str.encode())
-        print("request type: ", request_type_str)
-        filename_length = "0x"+format(len(filename_str), "02x")
-        client_socket.send(filename_length.encode())
-        client_socket.sendall(filename_str.encode())
-        print("file name: ", filename_str) 
-        bytes_sent = handle_request_client(request_type_str, filename_str, client_socket)
+        request_type_sent = send_one_message(client_socket, request_type_str)
+        filename_sent = send_one_message(client_socket, filename_str) 
+        data_sent = handle_request_client(request_type_str, filename_str, client_socket)
         print("file sent successfully. Exiting...")
         break
 

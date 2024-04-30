@@ -1,7 +1,7 @@
 import os
 import sys
 import socket
-from common_methods import socket_to_memory, get_path, write_to_file
+from common_methods import send_one_data_message, get_path, write_to_file, recv_one_message
 
 def parse_port_arg():
 
@@ -34,39 +34,36 @@ try:
         cli_addr_str = str(client_address) 
         print("Client " + cli_addr_str + " connected. Now chatting...")
         
-        while True:
-            try:
-                request = client_socket.recv(50).decode()
-            except Exception as e:
-                print("connection was closed by client")
-            request = client_socket.recv(50).decode()
-            print("request: ", request)
-            if request.strip() == "list":
-                response = str(os.listdir())
-                client_socket.sendall(response.encode())
-
-            elif request.strip()[:3] == "put":
-                print("request type: ", request.strip()[:3])
-                filename_length = request.strip()[3:7]
-                print("filename length: ", filename_length)
-                msg_start_index = 7 + int(filename_length, 16)
-                filename = str(request.strip()[7:msg_start_index])
-                print("filename ", filename)
-                contents = str(request.strip()[msg_start_index:])
-                print("message : ", request.strip())
-                file_path = get_path(filename, "server_data", False) + "/" + filename
-                #contents = client_socket.recv(1024).decode("utf-8")
-                new_file = write_to_file(file_path, contents)
-                #file = open(file_path, "w")
-                
-				
-                #file.write("ok")
-                #client_socket.send("File received".encode())
-            #bytes_saved = socket_to_memory(client_socket, cli_addr_str)
-            #if bytes_saved == 0:
-               # print("Client closed connection.")
-              #  exit(0)
-            
+        try:
+            first_message = recv_one_message(client_socket).decode()
+            second_message = recv_one_message(client_socket).decode()
+            third_message = recv_one_message(client_socket).decode()
+            print("first message: ", first_message)
+            print("second message: ", second_message)
+        except Exception as e:
+            print("connection was closed by client")
+        #if request.strip() == "list":
+        #    response = str(os.listdir())
+        #    client_socket.sendall(response.encode())
+        if first_message == "put":
+            print("request type: ", first_message)
+            filename = second_message
+            print("filename ", filename)
+            contents = third_message
+            print("message : ", contents)
+            file_path = get_path(filename, "server_data", False) + "/" + filename
+            #contents = client_socket.recv(1024).decode("utf-8")
+            new_file = write_to_file(file_path, contents)
+            print("file saved")
+        
+        elif first_message == "get":
+            filename_str = second_message
+            print(filename_str)
+            filename = "server_data/"+filename_str
+            sent_data = send_one_data_message(filename, server_socket)
+            # bytes_sent = handle_request_client(request.strip()[:3], file, client_socket)
+            exit(0)
+        #
 finally:
     client_socket.close()
 

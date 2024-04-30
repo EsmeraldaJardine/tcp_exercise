@@ -9,7 +9,7 @@ def socket_to_memory(socket, socket_address):
     data = bytearray(1)
     bytes_read = 0
     while len(data) > 0:
-        data = socket.recv(100)
+        data = socket.recv(4096)
         print(data.decode(), end="") 
         bytes_read += len(data)
     return bytes_read
@@ -41,14 +41,10 @@ def send_file(file_name_str, socket):
     bytes_sent = 0
     try:
         with open(file_path, 'r') as reader:
-                while True:
-                    print("...sending data...")
-                    data = reader.read(100)
-                    if not data:
-                        break
-                    socket.sendall(str.encode((data)))
-                    print(data)
-                    bytes_sent += len(data)
+                print("...sending data...")
+                data = reader.read(4096)
+                socket.sendall(str.encode((data)))
+                bytes_sent += len(data)
                 return bytes_sent               
     except Exception as e:
         print("Error while sending file:", e)

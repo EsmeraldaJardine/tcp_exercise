@@ -24,6 +24,10 @@ except Exception as e:
     
 try:
     while True:
+        client_socket.sendall(request_type_str.encode())
+        print("request type: ", request_type_str)
+        client_socket.sendall(file_name_str.encode())
+        print("file name: ", file_name_str)
         print("looping")  
         bytes_sent = handle_request_client(request_type_str, file_name_str, client_socket)
         print("file sent successfully. Exiting...")

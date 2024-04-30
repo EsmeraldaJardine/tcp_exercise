@@ -16,7 +16,6 @@ def parse_port_arg():
 
     return port_num
 
-
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
@@ -35,6 +34,10 @@ try:
         print("Client " + cli_addr_str + " connected. Now chatting...")
         
         while True:
+            request_type = client_socket.recv(3).decode()
+            print("request type: ", request_type)
+            file_name = client_socket.recv(11).decode()
+            print("file name: ", file_name)
             bytes_saved = socket_to_memory(client_socket, cli_addr_str)
             if bytes_saved == 0:
                 print("Client closed connection.")

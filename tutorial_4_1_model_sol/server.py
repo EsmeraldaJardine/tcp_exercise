@@ -41,7 +41,11 @@ try:
                 client_socket.sendall(response.encode())
             elif request.strip()[:3] == "put":
                 print("request type: ", request.strip()[:3])
-                filename = str(request.strip()[3:])
+                filename_length = request.strip()[3:7]
+                msg_start_index = 7 + int(filename_length, 16)
+                filename = str(request.strip()[7:msg_start_index])
+                print("filename ", filename)
+                contents = str(request.strip()[msg_start_index:])
                 file_path = get_path(filename, "server_data", False) + "/" + filename
                 contents = client_socket.recv(1024).decode("utf-8")
                 new_file = write_to_file(file_path, contents)

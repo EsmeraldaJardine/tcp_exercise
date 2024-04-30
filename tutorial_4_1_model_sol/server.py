@@ -42,9 +42,8 @@ try:
             elif request.strip()[:3] == "put":
                 print("request type: ", request.strip()[:3])
                 filename = str(request.strip()[3:])
-                file_path = get_path(filename, "server_data", False) + filename
+                file_path = get_path(filename, "server_data", False) + "/" + filename
                 print("file path: ", file_path)
-                print("contents: ", client_socket.recv(1024).decode("utf-8"))
                 new_file = write_to_file(file_path, client_socket)
                 #file = open(file_path, "w")
                 

@@ -35,25 +35,31 @@ try:
         print("Client " + cli_addr_str + " connected. Now chatting...")
         
         while True:
-            request = client_socket.recv(50).decode()
+            try:
+                request = client_socket.recv(50).decode()
+            except Exception as e:
+                print("connection was closed by client")
             if request.strip() == "list":
                 response = str(os.listdir())
                 client_socket.sendall(response.encode())
+
             elif request.strip()[:3] == "put":
                 print("request type: ", request.strip()[:3])
                 filename_length = request.strip()[3:7]
+                print("filename length: ", filename_length)
                 msg_start_index = 7 + int(filename_length, 16)
                 filename = str(request.strip()[7:msg_start_index])
                 print("filename ", filename)
                 contents = str(request.strip()[msg_start_index:])
+                print("message : ", request.strip())
                 file_path = get_path(filename, "server_data", False) + "/" + filename
-                contents = client_socket.recv(1024).decode("utf-8")
+                #contents = client_socket.recv(1024).decode("utf-8")
                 new_file = write_to_file(file_path, contents)
                 #file = open(file_path, "w")
                 
 				
                 #file.write("ok")
-                client_socket.send("File received".encode())
+                #client_socket.send("File received".encode())
             #bytes_saved = socket_to_memory(client_socket, cli_addr_str)
             #if bytes_saved == 0:
                # print("Client closed connection.")

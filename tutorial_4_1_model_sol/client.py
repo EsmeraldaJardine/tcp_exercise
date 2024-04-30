@@ -27,14 +27,12 @@ try:
         client_socket.sendall(request_type_str.encode())
         print("request type: ", request_type_str)
         client_socket.sendall(file_name_str.encode())
-        print("file name: ", file_name_str)
-        print("looping")  
+        print("file name: ", file_name_str) 
         bytes_sent = handle_request_client(request_type_str, file_name_str, client_socket)
         print("file sent successfully. Exiting...")
         break
 
 finally:
-    print("finally")
     client_socket.close()
 exit(0)
          

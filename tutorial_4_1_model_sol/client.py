@@ -23,13 +23,14 @@ except Exception as e:
     
     
 try:
-    while True:  
+    while True:
+        print("looping")  
         bytes_sent = handle_request_client(request_type_str, file_name_str, client_socket)
-        if bytes_sent == 0:
-            print("User-requested exit.")
-            break
-         
+        print("file sent successfully. Exiting...")
+        break
+
 finally:
+    print("finally")
     client_socket.close()
 exit(0)
          

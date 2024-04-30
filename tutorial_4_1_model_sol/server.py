@@ -27,8 +27,8 @@ except Exception as e:
     exit(1)
     
     
-while True:
-    try:
+try:
+    while True:
         print("Waiting for new client... ")
         client_socket, client_address = server_socket.accept()
         cli_addr_str = str(client_address) 
@@ -36,6 +36,10 @@ while True:
         
         while True:
             bytes_saved = socket_to_memory(client_socket, cli_addr_str)
+            if bytes_saved == 0:
+                print("Client closed connection.")
+                exit(0)
             
-    finally:
-        client_socket.close()
+finally:
+    client_socket.close()
+

@@ -8,9 +8,8 @@ def socket_to_memory(socket, socket_address):
     print(socket_address + ": ", end="", flush=True)
     data = bytearray(1)
     bytes_read = 0
-    
-    while len(data) > 0 and "\n" not in data.decode():
-        data = socket.recv(4096)
+    while len(data) > 0:
+        data = socket.recv(100)
         print(data.decode(), end="") 
         bytes_read += len(data)
     return bytes_read
@@ -21,7 +20,6 @@ def device_to_socket(socket):
     user_request = input("send, download or view the server files (type EXIT to exit)")
     # if client socket
     handle_request_client(user_request, socket)
-    
     # else: handle_request_server
     
 
@@ -30,6 +28,7 @@ def handle_request_client(request_type_str, file_name_str, socket):
     match request_type_str:
         case "put":
             send_file(file_name_str, socket)
+            print(" handle_request_client")
         case "get":
             download_file()
         case "list":
@@ -39,15 +38,18 @@ def handle_request_client(request_type_str, file_name_str, socket):
 
 def send_file(file_name_str, socket):
     file_path = get_path(file_name_str)
+    bytes_sent = 0
     try:
         with open(file_path, 'r') as reader:
                 while True:
                     print("...sending data...")
-                    data = reader.read(4096)
+                    data = reader.read(100)
                     if not data:
                         break
-                    bytes_sent = socket.sendall(str.encode((data)))
-                    return bytes_sent               
+                    socket.sendall(str.encode((data)))
+                    print(data)
+                    bytes_sent += len(data)
+                return bytes_sent               
     except Exception as e:
         print("Error while sending file:", e)
         return 0

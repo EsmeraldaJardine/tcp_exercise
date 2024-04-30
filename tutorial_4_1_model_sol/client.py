@@ -31,4 +31,5 @@ try:
          
 finally:
     client_socket.close()
+exit(0)
          

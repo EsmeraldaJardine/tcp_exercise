@@ -43,10 +43,11 @@ try:
                 print("request type: ", request.strip()[:3])
                 filename = str(request.strip()[3:])
                 file_path = get_path(filename, "server_data", False) + "/" + filename
-                new_file = write_to_file(file_path, client_socket)
+                contents = client_socket.recv(1024).decode("utf-8")
+                new_file = write_to_file(file_path, contents)
                 #file = open(file_path, "w")
                 
-				#contents = cli_sock.recv(1024).decode("utf-8")
+				
                 #file.write("ok")
                 client_socket.send("File received".encode())
             #bytes_saved = socket_to_memory(client_socket, cli_addr_str)

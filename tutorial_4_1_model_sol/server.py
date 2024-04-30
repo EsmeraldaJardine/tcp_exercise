@@ -39,6 +39,8 @@ try:
                 request = client_socket.recv(50).decode()
             except Exception as e:
                 print("connection was closed by client")
+            request = client_socket.recv(50).decode()
+            print("request: ", request)
             if request.strip() == "list":
                 response = str(os.listdir())
                 client_socket.sendall(response.encode())

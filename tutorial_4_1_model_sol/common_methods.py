@@ -1,6 +1,7 @@
 import sys
 import socket
 import os
+import struct
 
 
 
@@ -27,7 +28,7 @@ def device_to_socket(socket):
 def handle_request_client(request_type_str, file_name_str, socket):
     match request_type_str:
         case "put":
-            send_file(file_name_str, socket)
+            send_one_message(file_name_str, socket)
         case "get":
             download_file()
         case "list":
@@ -35,19 +36,40 @@ def handle_request_client(request_type_str, file_name_str, socket):
         case "EXIT":
             return 0
 
-def send_file(file_name_str, socket):
-    file_path = get_path(file_name_str, "client_data", True)
-    bytes_sent = 0
-    try:
-        with open(file_path, 'r') as reader:
-                print("...sending data...")
-                data = reader.read(4096)
-                socket.sendall(str.encode((data)))
-                bytes_sent += len(data)
-                return bytes_sent               
-    except Exception as e:
-        print("Error while sending file:", e)
-        return 0
+#def send_file(file_name_str, socket):
+#    file_path = get_path(file_name_str, "client_data", True)
+#    bytes_sent = 0
+#    try:
+#        with open(file_path, 'r') as reader:
+#                print("...sending data...")
+#                data = reader.read(4096)
+#                socket.sendall(str.encode((data)))
+#                bytes_sent += len(data)
+#                return bytes_sent              
+#    except Exception as e:
+#        print("Error while sending file:", e)
+#        return 0
+#    
+def send_one_message(file_name, socket):
+    file_path = get_path(file_name, "client_data", True)
+    data = open_file(file_path)
+    length = len(data)
+    socket.sendall(struct.pack('!I', length))
+    socket.sendall(str.encode((data)))
+
+def recv_one_message(sock):
+    lengthbuf = recvall(sock, 4)
+    length, = struct.unpack('!I', lengthbuf)
+    return recvall(sock, length)
+
+def recvall(sock, count):
+    buf = b''
+    while count:
+        newbuf = sock.recv(count)
+        if not newbuf: return None
+        buf += newbuf
+        count -= len(newbuf)
+    return buf
 
 def download_file(): #write to a file stuff
     return 0
@@ -80,6 +102,11 @@ def write_to_file(file_name_str, content):
         print("Error while writing to file:", e)
         return False
             
-
-
-    
+def open_file(file_name):
+    try:
+        with open(file_name, 'r') as reader:
+            data = reader.read()
+            return data
+    except Exception as e:
+        print("Error while opening file:", e)
+        return None

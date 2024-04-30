@@ -4,10 +4,8 @@ from common_methods import handle_request_client
 
 print("Make sure this is ran as python client.py <hostname> <port> put <filename>")
 server_addr = (sys.argv[1], int(sys.argv[2])) 
-request_type = sys.argv[3]
 request_type_str = str(sys.argv[3])
-file_name = sys.argv[4]
-file_name_str = str(sys.argv[4])
+filename_str = str(sys.argv[4])
 
 server_addr_str = str(server_addr)
 
@@ -26,15 +24,15 @@ try:
     while True:
         client_socket.sendall(request_type_str.encode())
         print("request type: ", request_type_str)
-        client_socket.sendall(file_name_str.encode())
-        print("file name: ", file_name_str)
-        print("looping")  
-        bytes_sent = handle_request_client(request_type_str, file_name_str, client_socket)
+        filename_length = "0x"+format(len(filename_str), "02x")
+        client_socket.send(filename_length.encode())
+        client_socket.sendall(filename_str.encode())
+        print("file name: ", filename_str) 
+        bytes_sent = handle_request_client(request_type_str, filename_str, client_socket)
         print("file sent successfully. Exiting...")
         break
 
 finally:
-    print("finally")
     client_socket.close()
 exit(0)
          

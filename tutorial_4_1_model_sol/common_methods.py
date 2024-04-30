@@ -28,7 +28,6 @@ def handle_request_client(request_type_str, file_name_str, socket):
     match request_type_str:
         case "put":
             send_file(file_name_str, socket)
-            print(" handle_request_client")
         case "get":
             download_file()
         case "list":
@@ -62,12 +61,25 @@ def get_path(file_name_str, dir_name, parent):
     if parent == True:
         relative_path = os.path.join("..", dir_name, file_name_str)
     else:
-        relative_path = os.path.join(dir_name, file_name_str)
+        relative_path = os.path.join(dir_name)
     absolute_path = os.path.normpath(os.path.join(current_dir, relative_path))
+    
     if os.path.exists(absolute_path):
         return absolute_path 
     else:
         print(f"The file '{file_name_str}' does not exist in directory '{os.path.dirname(absolute_path)}'")
-        return None
-    
+        return None #error statement is only for sending files, not for receiving them
             
+
+def write_to_file(file_name_str, content):
+    try:
+        with open(file_name_str, 'w') as writer:
+            writer.write(content)
+            return True
+    except Exception as e:
+        print("Error while writing to file:", e)
+        return False
+            
+
+
+    

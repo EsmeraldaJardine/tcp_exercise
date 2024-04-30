@@ -1,7 +1,7 @@
 import os
 import sys
 import socket
-from common_methods import socket_to_memory, get_path
+from common_methods import socket_to_memory, get_path, write_to_file
 
 def parse_port_arg():
 
@@ -41,16 +41,23 @@ try:
                 client_socket.sendall(response.encode())
             elif request.strip()[:3] == "put":
                 print("request type: ", request.strip()[:3])
-                filename = str(request.strip()[3:])
-                file_path = get_path(filename, "server_data", False)
-                file = open(file_path, "w")
-				#contents = cli_sock.recv(1024).decode("utf-8")
-                file.write("ok")
+                filename_length = request.strip()[3:7]
+                msg_start_index = 7 + int(filename_length, 16)
+                filename = str(request.strip()[7:msg_start_index])
+                print("filename ", filename)
+                contents = str(request.strip()[msg_start_index:])
+                file_path = get_path(filename, "server_data", False) + "/" + filename
+                contents = client_socket.recv(1024).decode("utf-8")
+                new_file = write_to_file(file_path, contents)
+                #file = open(file_path, "w")
+                
+				
+                #file.write("ok")
                 client_socket.send("File received".encode())
-            bytes_saved = socket_to_memory(client_socket, cli_addr_str)
-            if bytes_saved == 0:
-                print("Client closed connection.")
-                exit(0)
+            #bytes_saved = socket_to_memory(client_socket, cli_addr_str)
+            #if bytes_saved == 0:
+               # print("Client closed connection.")
+              #  exit(0)
             
 finally:
     client_socket.close()

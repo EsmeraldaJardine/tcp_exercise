@@ -43,7 +43,6 @@ try:
                 print("request type: ", request.strip()[:3])
                 filename = str(request.strip()[3:])
                 file_path = get_path(filename, "server_data", False) + "/" + filename
-                print("file path: ", file_path)
                 new_file = write_to_file(file_path, client_socket)
                 #file = open(file_path, "w")
                 

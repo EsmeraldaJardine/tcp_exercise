@@ -29,9 +29,7 @@ def handle_request_client(request_type_str, file_name_str, socket):
         case "put":
             send_file(file_name_str, socket)
         case "get":
-            download_file()
-        case "list":
-            view_files()
+            download_file(file_name_str, socket)
         case "EXIT":
             return 0
 
@@ -49,17 +47,21 @@ def send_file(file_name_str, socket):
         print("Error while sending file:", e)
         return 0
 
-def download_file(): #write to a file stuff
-    return 0
-
-def view_files(): #not sure yet
-    return 0
-
+def download_file(file_name_str, socket): #write to a file stuff
+    file_path = get_path(file_name_str, "server_data", False)
+    try:
+        with open(file_path, 'r') as reader:
+                print("...sending data...")
+                data = reader.read(4096)
+                socket.sendall(str.encode((data)))
+    except Exception as e:
+        print("Error while sending file:", e)
+        return 0
 
 def get_path(file_name_str, dir_name, parent):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     if parent == True:
-        relative_path = os.path.join("..", dir_name, file_name_str)
+        relative_path = os.path.join("..", dir_name)
     else:
         relative_path = os.path.join(dir_name)
     absolute_path = os.path.normpath(os.path.join(current_dir, relative_path))

@@ -1,7 +1,7 @@
 import os
 import sys
 import socket
-from common_methods import socket_to_memory, get_path, write_to_file
+from common_methods import handle_request_client, socket_to_memory, get_path, write_to_file
 
 def parse_port_arg():
 
@@ -50,6 +50,14 @@ try:
                 file_path = get_path(filename, "server_data", False) + "/" + filename
                 new_file = write_to_file(file_path, contents)
                 client_socket.send("File received".encode())
+                exit(0)
+            elif request.strip()[:3] == "get":
+                filename_str = request.strip()[3:]
+                print(filename_str)
+                file = "server_data/"+filename_str
+                with open(file, 'r') as content:
+                    client_socket.sendall(content.read().encode())
+                # bytes_sent = handle_request_client(request.strip()[:3], file, client_socket)
                 exit(0)
 
             

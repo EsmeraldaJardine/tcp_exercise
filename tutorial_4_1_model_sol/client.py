@@ -1,6 +1,6 @@
 import sys
 import socket
-from common_methods import handle_request_client
+from common_methods import get_path, handle_request_client, write_to_file
 
 print("Make sure this is ran as python client.py <hostname> <port> put <filename>")
 server_addr = (sys.argv[1], int(sys.argv[2])) 
@@ -26,15 +26,24 @@ try:
         client_socket.sendall(request_type_str.encode())
         if request_type_str != "list":
             filename_length = "0x"+format(len(filename_str), "02x")
-            client_socket.send(filename_length.encode())
-            client_socket.sendall(filename_str.encode())
-            print("file name: ", filename_str) 
-            bytes_sent = handle_request_client(request_type_str, filename_str, client_socket)
-            print("file sent successfully. Exiting...")
+            if request_type_str == "put":
+                client_socket.send(filename_length.encode())
+                client_socket.sendall(filename_str.encode())
+                bytes_sent = handle_request_client(request_type_str, filename_str, client_socket)
+                print("file sent successfully. Exiting...")
+            elif request_type_str == "get":
+                client_socket.send(filename_str.encode())
+                response = client_socket.recv(50).decode()
+                contents = str(response)
+                print(filename_str)
+                file_path = get_path(filename_str, "client_data", True) + "/" + filename_str
+                # print(file_path)
+                new_file = write_to_file(file_path, contents)
+                client_socket.send("File received".encode())
+                exit(0)
             break
         else:
             response = client_socket.recv(1024).decode().strip()
-            print(str(response[0:]))
             break
 
 finally:

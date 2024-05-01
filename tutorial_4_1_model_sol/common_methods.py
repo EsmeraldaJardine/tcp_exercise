@@ -15,6 +15,9 @@ def socket_to_memory(socket, socket_address):
         bytes_read += len(data)
     return bytes_read
 
+def close_conn(socket):
+    socket.close()
+    exit(0)
  
     
 
@@ -36,7 +39,6 @@ def send_one_message(socket, data):
 def send_one_data_message(file_path, socket):
     data = open_file(file_path)
     length = len(data)
-    print("length: ", length)
     socket.sendall(struct.pack('!I', length))
     socket.sendall(str.encode((data)))
 
@@ -72,7 +74,7 @@ def get_path(dir_name, parent):
     if os.path.exists(absolute_path):
         return absolute_path
     else:
-        print(f" not sure about this error yet...'{os.path.dirname(absolute_path)}'")
+        print(f"Target directory does not exist: '{os.path.dirname(absolute_path)}'")
         return None 
             
 

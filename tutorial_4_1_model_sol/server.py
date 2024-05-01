@@ -57,11 +57,11 @@ try:
             print("Sending file list...")
             file_path = get_path("server_data", False)
             sent_data = handle_request(request_type_str, file_path, client_socket)
-            
+            client_socket.close()
+            exit(0)
         
         else:
             second_message = recv_one_message(client_socket).decode()
-            print("second message: ", second_message)
 
         if request_type_str == "put":
             print("Server receiving file...")
@@ -70,11 +70,19 @@ try:
             if "ERR" in content:
                     print(content[3:])
                     break
-            print("message : ", content)
             file_path = get_path("server_data", False) + "/" + filename_str
+            if os.path.exists(file_path):
+                for cnt in range(1, 100):
+                    if not os.path.exists(file_path[:-4]+"("+str(cnt)+")"+file_path[-4:]):
+                        file_path=file_path[:-4]+"("+str(cnt)+")"+file_path[-4:]
+                        filename_str = filename_str[:-4]+"("+str(cnt)+")"+filename_str[-4:]
+                        break
             new_file = write_to_file(file_path, content)
-            print("file saved")
-            break
+            success_msg = "put successful! Saved on server as: " + filename_str
+            print(success_msg)
+            send_one_message(client_socket, success_msg)
+            client_socket.close()
+            exit(0)
             
         
         elif request_type_str == "get":
@@ -84,12 +92,15 @@ try:
             file_path = get_path("server_data", False) + "/" + filename_str
             if os.path.exists(file_path):
                 sent_data = handle_request(request_type_str, file_path, client_socket)
-                print("file sent!")
+                success_msg = "get successful! Exiting..."
+                print(success_msg)
+                send_one_message(client_socket, success_msg)
             else:
                 error = "No such file exists!"
                 print(error)
                 send_one_message(client_socket, "ERR"+error)
-            break
+            client_socket.close()
+            exit(0)
 
 except Exception as e:
     print("Error message: ", e, " occurred. Exiting...")
@@ -99,4 +110,5 @@ except Exception as e:
         
 finally:
     client_socket.close()
+    exit(0)
 

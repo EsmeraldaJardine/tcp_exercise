@@ -36,7 +36,9 @@ try:
         
         try:
             first_message = recv_one_message(client_socket).decode()
+            client_socket.sendall(b'ack')
             second_message = recv_one_message(client_socket).decode()
+            client_socket.sendall(b'ack')
             third_message = recv_one_message(client_socket).decode()
             print("first message: ", first_message)
             print("second message: ", second_message)
@@ -46,21 +48,21 @@ try:
         #    response = str(os.listdir())
         #    client_socket.sendall(response.encode())
         if first_message == "put":
-            print("request type: ", first_message)
-            filename = second_message
-            print("filename ", filename)
+            request_type_str = first_message
+            filename_str = second_message
             contents = third_message
             print("message : ", contents)
-            file_path = get_path(filename, "server_data", False) + "/" + filename
-            #contents = client_socket.recv(1024).decode("utf-8")
+            file_path = get_path(filename_str, "server_data", False) + "/" + filename_str
             new_file = write_to_file(file_path, contents)
             print("file saved")
         
         elif first_message == "get":
+            print("request type: ", first_message)
             filename_str = second_message
             print(filename_str)
-            filename = "server_data/"+filename_str
-            sent_data = send_one_data_message(filename, server_socket)
+            filename_str = "server_data/"+filename_str
+            print("filename: ", filename_str)
+            sent_data = send_one_data_message(filename_str, server_socket)
             # bytes_sent = handle_request_client(request.strip()[:3], file, client_socket)
             exit(0)
         #

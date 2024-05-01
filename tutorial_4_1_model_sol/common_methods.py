@@ -16,21 +16,16 @@ def socket_to_memory(socket, socket_address):
     return bytes_read
 
  
-def device_to_socket(socket):
-    print("You: ", end="", flush=True) 
-    user_request = input("send, download or view the server files (type EXIT to exit)")
-    # if client socket
-    handle_request_client(user_request, socket)
-    # else: handle_request_server
     
 
 
-def handle_request_client(request_type_str, file_name_str, socket):
+def handle_request_client(request_type_str, file_path, socket):
     match request_type_str:
         case "put":
-            send_one_data_message(file_name_str, socket)
+            send_one_data_message(file_path, socket)
         case "get":
-            download_file(file_name_str, socket)
+           # file_path = get_path(file_name_str, "server_data", False) + "/" + file_name_str
+           # download_file(file_path, socket)
             print("file downloaded")
         case "list":
             view_files()
@@ -43,9 +38,9 @@ def send_one_message(socket, data):
     socket.sendall(struct.pack('!I', length))
     socket.sendall(str.encode((data)))
 
-def send_one_data_message(file_name, socket):
-    file_path = get_path(file_name, "client_data", True)
+def send_one_data_message(file_path, socket):
     data = open_file(file_path)
+    print("data: ", data)
     length = len(data)
     print("length: ", length)
     socket.sendall(struct.pack('!I', length))
@@ -66,8 +61,7 @@ def recvall(sock, count):
         count -= len(newbuf)
     return buf
 
-def download_file(file_name, socket): #write to a file stuff
-    file_path = get_path(file_name, "server_data", False)+ "/" + file_name
+def download_file(file_path, socket): #write to a file stuff
     print("file path: ", file_path)
     content = recv_one_message(socket).decode()
     print("content: ", content)

@@ -99,6 +99,7 @@ try:
                 error = "No such file exists!"
                 print(error)
                 send_one_message(client_socket, "ERR"+error)
+            print(recv_one_message(client_socket).decode())
             client_socket.close()
             exit(0)
 

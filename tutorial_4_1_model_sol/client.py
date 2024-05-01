@@ -72,5 +72,14 @@ while True:
                 exit(0)
             print("file name: ", filename_str)
             file_path = get_path("client_data", True) + "/" + filename_str
+            if os.path.exists(file_path):
+                for cnt in range(1, 100):
+                    if not os.path.exists(file_path[:-4]+"("+str(cnt)+")"+file_path[-4:]):
+                        file_path=file_path[:-4]+"("+str(cnt)+")"+file_path[-4:]
+                        filename_str = filename_str[:-4]+"("+str(cnt)+")"+filename_str[-4:]
+                        break
             new_file = write_to_file(file_path, content)
+            success_msg = "put successful! Saved on client as: " + filename_str
+            print(success_msg)
+            send_one_message(client_socket, success_msg)
             close_conn(client_socket)

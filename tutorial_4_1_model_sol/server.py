@@ -35,17 +35,17 @@ try:
         
 
         request_type_str = recv_one_message(client_socket).decode()
-        client_socket.sendall(b'ack')
+        client_socket.sendall(str.encode("ack"))
 
         if request_type_str == "list":
             file_path = get_path("server_data", False)
-            client_socket.sendall(b'ack')   
+            client_socket.sendall(str.encode("ack"))   
             sent_data = handle_request(request_type_str, file_path, client_socket)
             
         
         else:
             second_message = recv_one_message(client_socket).decode()
-            client_socket.sendall(b'ck')
+            client_socket.sendall(str.encode("ack"))
             print("second message: ", second_message)
 
         if request_type_str == "put":
@@ -62,7 +62,7 @@ try:
             request_type_str = "put"
             file_path = get_path("server_data", False) + "/" + filename_str
             print("file path: ", file_path)
-            client_socket.sendall(b'ack')
+            client_socket.sendall(str.encode("ack"))
             sent_data = handle_request(request_type_str, file_path, client_socket)
 
 except Exception as e:

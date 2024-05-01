@@ -9,13 +9,14 @@ server_addr_str = str(server_addr)
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 def verify_acknowledgement(message, message_type):
-    if message.decode() != "ack":
+    if message.decode()[:3] != "ack":
         print("Server did not acknowledge the " + message_type + " message. Exiting...")
         exit(1)
     elif message_type != "content":
         print(message_type + " sent")
     else:
         print(message_type + " received")
+        exit(0)
 
 
 try:

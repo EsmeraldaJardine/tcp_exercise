@@ -57,8 +57,7 @@ try:
             print("Sending file list...")
             file_path = get_path("server_data", False)
             sent_data = handle_request(request_type_str, file_path, client_socket)
-            client_socket.close()
-            exit(0)
+            close_conn(client_socket)
         
         else:
             second_message = recv_one_message(client_socket).decode()
@@ -81,8 +80,7 @@ try:
             success_msg = "put successful! Saved on server as: " + filename_str
             print(success_msg)
             send_one_message(client_socket, success_msg)
-            client_socket.close()
-            exit(0)
+            close_conn(client_socket)
             
         
         elif request_type_str == "get":
@@ -103,8 +101,7 @@ try:
                 print(error)
                 send_one_message(client_socket, "ERR"+error)
             print(recv_one_message(client_socket).decode())
-            client_socket.close()
-            exit(0)
+            close_conn(client_socket)
 
 except Exception as e:
     print("Error message: ", e, " occurred. Exiting...")

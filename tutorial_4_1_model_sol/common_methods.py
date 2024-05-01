@@ -64,7 +64,7 @@ def recvall(sock, count):
 
 
 
-def send_server_files(file_path, socket): #not sure yet
+def send_server_files(file_path, socket):
     file_list =os.listdir(file_path)
     files = str(file_list)
     send_one_message(socket, files)
@@ -100,4 +100,4 @@ def open_file(file_name):
             return data
     except Exception as e:
         print("Error while opening file:", e)
-        return None
+        exit(0)

@@ -16,9 +16,6 @@ if len(sys.argv) > 3:
         if len(filename_str) > 100:
             print("Filenames cannot be longer than 100 characters!")
             exit(0)
-    else:
-        print("Make sure this is ran as python client.py <hostname> <port> <put filename|get filename|list>")
-        exit(0)
 else:
     print("Make sure this is ran as python client.py <hostname> <port> <put filename|get filename|list>")
     exit(0)

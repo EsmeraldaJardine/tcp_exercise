@@ -1,7 +1,7 @@
 import os
 import sys
 import socket
-from common_methods import send_one_data_message, get_path, write_to_file, recv_one_message
+from common_methods import handle_request, get_path, write_to_file, recv_one_message
 
 def parse_port_arg():
 
@@ -39,7 +39,7 @@ try:
             client_socket.sendall(b'ack')
             second_message = recv_one_message(client_socket).decode()
             client_socket.sendall(b'ack')
-            third_message = recv_one_message(client_socket).decode()
+
             print("first message: ", first_message)
             print("second message: ", second_message)
         except Exception as e:
@@ -50,22 +50,21 @@ try:
         if first_message == "put":
             request_type_str = first_message
             filename_str = second_message
-            contents = third_message
-            print("message : ", contents)
+            content = recv_one_message(client_socket).decode()
+            print("message : ", content)
             file_path = get_path(filename_str, "server_data", False) + "/" + filename_str
-            new_file = write_to_file(file_path, contents)
+            new_file = write_to_file(file_path, content)
             print("file saved")
         
         elif first_message == "get":
-            print("request type: ", first_message)
             filename_str = second_message
-            print(filename_str)
-            filename_str = "server_data/"+filename_str
-            print("filename: ", filename_str)
-            sent_data = send_one_data_message(filename_str, server_socket)
-            # bytes_sent = handle_request_client(request.strip()[:3], file, client_socket)
+            request_type_str = "put"
+            file_path = get_path(filename_str, "server_data", False) + "/" + filename_str
+            print("file path: ", file_path)
+            client_socket.sendall(b'ack')
+            sent_data = handle_request(request_type_str, file_path, client_socket)
             exit(0)
-        #
+        
 finally:
     client_socket.close()
 

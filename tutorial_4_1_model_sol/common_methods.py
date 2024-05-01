@@ -19,7 +19,7 @@ def socket_to_memory(socket, socket_address):
     
 
 
-def handle_request_client(request_type_str, file_path, socket):
+def handle_request(request_type_str, file_path, socket):
     match request_type_str:
         case "put":
             send_one_data_message(file_path, socket)
@@ -44,7 +44,6 @@ def send_one_data_message(file_path, socket):
     length = len(data)
     print("length: ", length)
     socket.sendall(struct.pack('!I', length))
-    print(struct.pack('!I', length))
     socket.sendall(str.encode((data)))
 
 def recv_one_message(sock):
@@ -78,16 +77,16 @@ def view_files(): #not sure yet
 def get_path(file_name_str, dir_name, parent):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     if parent == True:
-        relative_path = os.path.join("..", dir_name, file_name_str)
+        relative_path = os.path.join("..", dir_name)
     else:
         relative_path = os.path.join(dir_name)
     absolute_path = os.path.normpath(os.path.join(current_dir, relative_path))
-    
+    print("absolute path: ", absolute_path)
     if os.path.exists(absolute_path):
-        return absolute_path 
-    else:
-        print(f"The file '{file_name_str}' does not exist in directory '{os.path.dirname(absolute_path)}'")
-        return None #error statement is only for sending files, not for receiving them
+        return absolute_path
+    #else:
+    #    print(f"The file '{file_name_str}' does not exist in directory '{os.path.dirname(absolute_path)}'")
+    #    return None #error statement is only for sending files, not for receiving them
             
 
 def write_to_file(file_name_str, content):

@@ -23,12 +23,8 @@ def handle_request(request_type_str, file_path, socket):
     match request_type_str:
         case "put":
             send_one_data_message(file_path, socket)
-        case "get":
-           # file_path = get_path(file_name_str, "server_data", False) + "/" + file_name_str
-           # download_file(file_path, socket)
-            print("file downloaded")
         case "list":
-            view_files()
+            send_server_files(file_path, socket)
         case "EXIT":
             return 0
 
@@ -60,21 +56,16 @@ def recvall(sock, count):
         count -= len(newbuf)
     return buf
 
-def download_file(file_path, socket): #write to a file stuff
-    print("file path: ", file_path)
-    content = recv_one_message(socket).decode()
-    print("content: ", content)
-    downloaded_file = write_to_file(file_path, content)
-    if downloaded_file:
-        print(f"File '{file_name}' downloaded successfully")
-    else:
-        print(f"Error downloading file '{file_name}'")
-
-def view_files(): #not sure yet
-    return 0
 
 
-def get_path(file_name_str, dir_name, parent):
+def send_server_files(file_path, socket): #not sure yet
+    file_list =os.listdir(file_path)
+    files = str(file_list)
+    print("files: ", files)
+    send_one_message(socket, files)
+
+
+def get_path(dir_name, parent):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     if parent == True:
         relative_path = os.path.join("..", dir_name)

@@ -37,33 +37,40 @@ try:
         try:
             first_message = recv_one_message(client_socket).decode()
             client_socket.sendall(b'ack')
-            second_message = recv_one_message(client_socket).decode()
-            client_socket.sendall(b'ack')
-
             print("first message: ", first_message)
-            print("second message: ", second_message)
         except Exception as e:
             print("connection was closed by client")
-        #if request.strip() == "list":
-        #    response = str(os.listdir())
-        #    client_socket.sendall(response.encode())
+
+        if first_message == "list":
+            request_type_str = first_message
+            file_path = get_path("server_data", False)
+            client_socket.sendall(b'ack')   
+            sent_data = handle_request(request_type_str, file_path, client_socket)
+        
+        else:
+            second_message = recv_one_message(client_socket).decode()
+            client_socket.sendall(b'ack')
+            print("second message: ", second_message)
+
         if first_message == "put":
             request_type_str = first_message
             filename_str = second_message
             content = recv_one_message(client_socket).decode()
             print("message : ", content)
-            file_path = get_path(filename_str, "server_data", False) + "/" + filename_str
+            file_path = get_path("server_data", False) + "/" + filename_str
             new_file = write_to_file(file_path, content)
             print("file saved")
         
         elif first_message == "get":
             filename_str = second_message
             request_type_str = "put"
-            file_path = get_path(filename_str, "server_data", False) + "/" + filename_str
+            file_path = get_path("server_data", False) + "/" + filename_str
             print("file path: ", file_path)
             client_socket.sendall(b'ack')
             sent_data = handle_request(request_type_str, file_path, client_socket)
             exit(0)
+
+
         
 finally:
     client_socket.close()

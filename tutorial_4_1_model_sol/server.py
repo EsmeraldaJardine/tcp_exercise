@@ -1,4 +1,3 @@
-import os
 import sys
 import socket
 from common_methods import handle_request, get_path, write_to_file, recv_one_message
@@ -34,11 +33,9 @@ try:
         cli_addr_str = str(client_address) 
         print("Client " + cli_addr_str + " connected. Now chatting...")
         
-        try:
-            request_type_str = recv_one_message(client_socket).decode()
-            client_socket.sendall(b'ack')
-        except Exception as e:
-            print("connection was closed by client")
+
+        request_type_str = recv_one_message(client_socket).decode()
+        client_socket.sendall(b'ack')
 
         if request_type_str == "list":
             file_path = get_path("server_data", False)
@@ -48,7 +45,7 @@ try:
         
         else:
             second_message = recv_one_message(client_socket).decode()
-            client_socket.sendall(b'ack')
+            client_socket.sendall(b'ck')
             print("second message: ", second_message)
 
         if request_type_str == "put":
@@ -67,7 +64,10 @@ try:
             print("file path: ", file_path)
             client_socket.sendall(b'ack')
             sent_data = handle_request(request_type_str, file_path, client_socket)
-            
+
+except Exception as e:
+    print("Error message: ", e, " occurred. Exiting...")
+    exit(1)           
 
 
         

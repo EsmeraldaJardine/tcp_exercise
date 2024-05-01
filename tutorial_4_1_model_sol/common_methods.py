@@ -25,8 +25,7 @@ def handle_request(request_type_str, file_path, socket):
             send_one_data_message(file_path, socket)
         case "list":
             send_server_files(file_path, socket)
-        case "EXIT":
-            return 0
+
 
 
 def send_one_message(socket, data):
@@ -73,9 +72,9 @@ def get_path(dir_name, parent):
     absolute_path = os.path.normpath(os.path.join(current_dir, relative_path))
     if os.path.exists(absolute_path):
         return absolute_path
-    #else:
-    #    print(f"The file '{file_name_str}' does not exist in directory '{os.path.dirname(absolute_path)}'")
-    #    return None #error statement is only for sending files, not for receiving them
+    else:
+        print(f" not sure about this error yet...'{os.path.dirname(absolute_path)}'")
+        return None 
             
 
 def write_to_file(file_name_str, content):

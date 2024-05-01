@@ -1,6 +1,5 @@
 import sys
 import socket
-import os
 from common_methods import handle_request, send_one_message, get_path, write_to_file, recv_one_message
 
 print("Make sure this is ran as python client.py <hostname> <port> put <filename>")
@@ -38,6 +37,8 @@ try:
             files = recv_one_message(client_socket).decode()
             print("files: ", files)
             break
+            
+
         else:
             filename_str = str(sys.argv[4])
             filename_sent = send_one_message(client_socket, filename_str) 

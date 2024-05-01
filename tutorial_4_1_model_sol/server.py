@@ -104,11 +104,4 @@ try:
 
 except Exception as e:
     print("Error message: ", e, " occurred. Exiting...")
-    exit(0)           
-
-
-        
-finally:
-    client_socket.close()
-    exit(0)
-
+    exit(0)  

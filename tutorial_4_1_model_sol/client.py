@@ -61,6 +61,7 @@ while True:
                 error = "No such file exists!"
                 print(error)
                 send_one_message(client_socket, "ERR"+error)
+            print(recv_one_message(client_socket).decode())
             close_conn(client_socket)
 
         elif request_type_str == "get":

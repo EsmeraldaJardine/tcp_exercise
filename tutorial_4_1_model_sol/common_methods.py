@@ -35,7 +35,6 @@ def send_one_message(socket, data):
 
 def send_one_data_message(file_path, socket):
     data = open_file(file_path)
-    print("data: ", data)
     length = len(data)
     print("length: ", length)
     socket.sendall(struct.pack('!I', length))

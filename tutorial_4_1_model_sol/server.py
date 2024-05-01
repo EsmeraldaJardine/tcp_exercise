@@ -45,11 +45,7 @@ try:
         
         else:
             second_message = recv_one_message(client_socket).decode()
-<<<<<<< HEAD
-            client_socket.sendall(str.encode("ack"))
-=======
             client_socket.sendall(b'ack')
->>>>>>> d70e15cdf4f7a145fa482fb7e488d857d41d9726
             print("second message: ", second_message)
 
         if request_type_str == "put":
@@ -65,7 +61,6 @@ try:
             filename_str = second_message
             request_type_str = "put"
             file_path = get_path("server_data", False) + "/" + filename_str
-            print("file path: ", file_path)
             client_socket.sendall(str.encode("ack"))
             sent_data = handle_request(request_type_str, file_path, client_socket)
 

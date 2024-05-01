@@ -16,7 +16,7 @@ def verify_acknowledgement(message, message_type):
         print(message_type + " sent")
     else:
         print(message_type + " received")
-        exit(0)
+        
 
 
 try:

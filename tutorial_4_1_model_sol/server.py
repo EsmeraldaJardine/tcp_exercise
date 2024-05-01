@@ -45,7 +45,7 @@ try:
         
         else:
             second_message = recv_one_message(client_socket).decode()
-            client_socket.sendall(b'ck')
+            client_socket.sendall(b'ack')
             print("second message: ", second_message)
 
         if request_type_str == "put":

@@ -35,40 +35,39 @@ try:
         print("Client " + cli_addr_str + " connected. Now chatting...")
         
         try:
-            first_message = recv_one_message(client_socket).decode()
+            request_type_str = recv_one_message(client_socket).decode()
             client_socket.sendall(b'ack')
-            print("first message: ", first_message)
         except Exception as e:
             print("connection was closed by client")
 
-        if first_message == "list":
-            request_type_str = first_message
+        if request_type_str == "list":
             file_path = get_path("server_data", False)
             client_socket.sendall(b'ack')   
             sent_data = handle_request(request_type_str, file_path, client_socket)
+            
         
         else:
             second_message = recv_one_message(client_socket).decode()
             client_socket.sendall(b'ack')
             print("second message: ", second_message)
 
-        if first_message == "put":
-            request_type_str = first_message
+        if request_type_str == "put":
             filename_str = second_message
             content = recv_one_message(client_socket).decode()
             print("message : ", content)
             file_path = get_path("server_data", False) + "/" + filename_str
             new_file = write_to_file(file_path, content)
             print("file saved")
+            
         
-        elif first_message == "get":
+        elif request_type_str == "get":
             filename_str = second_message
             request_type_str = "put"
             file_path = get_path("server_data", False) + "/" + filename_str
             print("file path: ", file_path)
             client_socket.sendall(b'ack')
             sent_data = handle_request(request_type_str, file_path, client_socket)
-            exit(0)
+            
 
 
         

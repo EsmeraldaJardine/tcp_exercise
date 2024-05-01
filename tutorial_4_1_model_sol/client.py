@@ -55,6 +55,7 @@ try:
             file_path = get_path("client_data", True) + "/" + filename_str
             print("file path: ", file_path)
             new_file = write_to_file(file_path, content)
+            break
 
 
 

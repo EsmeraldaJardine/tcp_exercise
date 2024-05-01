@@ -61,7 +61,6 @@ def recvall(sock, count):
 def send_server_files(file_path, socket): #not sure yet
     file_list =os.listdir(file_path)
     files = str(file_list)
-    print("files: ", files)
     send_one_message(socket, files)
 
 
@@ -72,7 +71,6 @@ def get_path(dir_name, parent):
     else:
         relative_path = os.path.join(dir_name)
     absolute_path = os.path.normpath(os.path.join(current_dir, relative_path))
-    print("absolute path: ", absolute_path)
     if os.path.exists(absolute_path):
         return absolute_path
     #else:

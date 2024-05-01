@@ -1,3 +1,4 @@
+import os
 import sys
 import socket
 from common_methods import handle_request, send_one_message, get_path, write_to_file, recv_one_message
@@ -45,12 +46,20 @@ try:
             filename_sent = send_one_message(client_socket, filename_str) 
             if request_type_str == "put":  
                 file_path = get_path("client_data", True) + "/" + filename_str
-                data_sent = handle_request(request_type_str, file_path, client_socket)
-                print("file sent successfully. Exiting...")
+                if os.path.exists(file_path):
+                    data_sent = handle_request(request_type_str, file_path, client_socket)
+                    print("file sent successfully. Exiting...")
+                else:
+                    error = "No such file exists!"
+                    print(error)
+                    send_one_message(client_socket, "ERR"+error)
                 break
 
             elif request_type_str == "get":
                 content = recv_one_message(client_socket).decode()
+                if "ERR" in content:
+                    print(content[3:])
+                    break
                 print("file name: ", filename_str)
                 file_path = get_path("client_data", True) + "/" + filename_str
                 print("file path: ", file_path)

@@ -1,3 +1,4 @@
+import os
 import sys
 import socket
 from common_methods import handle_request, get_path, send_one_message, write_to_file, recv_one_message
@@ -66,11 +67,14 @@ try:
             print("Server receiving file...")
             filename_str = second_message
             content = recv_one_message(client_socket).decode()
+            if "ERR" in content:
+                    print(content[3:])
+                    break
             print("message : ", content)
             file_path = get_path("server_data", False) + "/" + filename_str
             new_file = write_to_file(file_path, content)
             print("file saved")
-            exit(1)
+            break
             
         
         elif request_type_str == "get":
@@ -78,9 +82,14 @@ try:
             filename_str = second_message
             request_type_str = "put"
             file_path = get_path("server_data", False) + "/" + filename_str
-            sent_data = handle_request(request_type_str, file_path, client_socket)
-            print("file sent!")
-            exit(1)
+            if os.path.exists(file_path):
+                sent_data = handle_request(request_type_str, file_path, client_socket)
+                print("file sent!")
+            else:
+                error = "No such file exists!"
+                print(error)
+                send_one_message(client_socket, "ERR"+error)
+            break
 
 except Exception as e:
     print("Error message: ", e, " occurred. Exiting...")

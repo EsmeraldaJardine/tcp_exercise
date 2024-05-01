@@ -13,6 +13,9 @@ if len(sys.argv) > 3:
         exit(0)
     if len(sys.argv) == 5 and (request_type_str == "get" or request_type_str == "put"):
         filename_str = str(sys.argv[4])
+        if len(filename_str) > 100:
+            print("Filenames cannot be longer than 100 characters!")
+            exit(0)
     else:
         print("Make sure this is ran as python client.py <hostname> <port> <put filename|get filename|list>")
         exit(0)
@@ -56,7 +59,12 @@ while True:
             file_path = get_path("client_data", True) + "/" + filename_str
             if os.path.exists(file_path):
                 data_sent = handle_request(request_type_str, file_path, client_socket)
-                print("file sent successfully. Exiting...")
+                if data_sent == 1:
+                    success_msg = "file sent successfully. Exiting..."
+                    print(success_msg)
+                    send_one_message(client_socket, success_msg)
+                else:
+                    close_conn(client_socket)
             else:
                 error = "No such file exists!"
                 print(error)

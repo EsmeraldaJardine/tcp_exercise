@@ -1,7 +1,7 @@
 import os
 import sys
 import socket
-from common_methods import handle_request, get_path, send_one_message, write_to_file, recv_one_message
+from common_methods import close_conn, handle_request, get_path, send_one_message, write_to_file, recv_one_message
 
 def parse_port_arg():
 
@@ -91,10 +91,13 @@ try:
             request_type_str = "put"
             file_path = get_path("server_data", False) + "/" + filename_str
             if os.path.exists(file_path):
-                sent_data = handle_request(request_type_str, file_path, client_socket)
-                success_msg = "get successful! Exiting..."
-                print(success_msg)
-                send_one_message(client_socket, success_msg)
+                data_sent = handle_request(request_type_str, file_path, client_socket)
+                if data_sent == 1:
+                    success_msg = "file sent successfully. Exiting..."
+                    print(success_msg)
+                    send_one_message(client_socket, success_msg)
+                else:
+                    close_conn(client_socket)
             else:
                 error = "No such file exists!"
                 print(error)

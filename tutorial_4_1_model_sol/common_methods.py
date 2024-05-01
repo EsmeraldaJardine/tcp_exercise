@@ -25,9 +25,11 @@ def close_conn(socket):
 def handle_request(request_type_str, file_path, socket):
     match request_type_str:
         case "put":
-            send_one_data_message(file_path, socket)
+            status = send_one_data_message(file_path, socket)
+            return status
         case "list":
-            send_server_files(file_path, socket)
+            status = send_server_files(file_path, socket)
+            return status
 
 
 
@@ -39,8 +41,12 @@ def send_one_message(socket, data):
 def send_one_data_message(file_path, socket):
     data = open_file(file_path)
     length = len(data)
+    if length == 0:
+        print("cannot send empty file!!!")
+        return 0
     socket.sendall(struct.pack('!I', length))
     socket.sendall(str.encode((data)))
+    return 1
 
 def recv_one_message(sock):
     lengthbuf = recvall(sock, 4)

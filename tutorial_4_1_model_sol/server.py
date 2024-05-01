@@ -45,7 +45,11 @@ try:
         
         else:
             second_message = recv_one_message(client_socket).decode()
+<<<<<<< HEAD
             client_socket.sendall(str.encode("ack"))
+=======
+            client_socket.sendall(b'ack')
+>>>>>>> d70e15cdf4f7a145fa482fb7e488d857d41d9726
             print("second message: ", second_message)
 
         if request_type_str == "put":

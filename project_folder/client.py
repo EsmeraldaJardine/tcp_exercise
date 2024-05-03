@@ -1,7 +1,7 @@
 import os
 import sys
 import socket
-from common_methods import close_conn, handle_request, send_one_message, get_path, write_to_file, recv_one_message
+from common_utilities import close_conn, handle_request, send_one_message, get_path, write_to_file, recv_one_message
 
 if len(sys.argv) > 3:
     server_addr = (sys.argv[1], int(sys.argv[2])) 
@@ -13,23 +13,26 @@ if len(sys.argv) > 3:
         exit(0)
     if len(sys.argv) == 5 and (request_type_str == "get" or request_type_str == "put"):
         filename_str = str(sys.argv[4])
-        if len(filename_str) > 100:
-            print("Filenames cannot be longer than 100 characters!")
+        if len(filename_str) > 30:
+            print("Filenames cannot be longer than 30 characters!")
             exit(0)
 else:
     print("Make sure this is ran as python client.py <hostname> <port> <put filename|get filename|list>")
     exit(0)
+
 
 def handshake(socket):
     send_one_message(socket, "syn")
     response = recv_one_message(socket).decode()
     if response == "syn/ack":
         send_one_message(socket, "ack")
-        print("Handhsake successful...continuing...")
+        print("Handshake successful...continuing...")
         return
     else:
         print("Handshake failed...")
         close_conn(socket)
+
+
 try:
     print("Connecting to " + server_addr_str + "... ")
     client_socket.connect(server_addr)
@@ -38,16 +41,15 @@ except Exception as e:
     client_socket.close()
     exit(1)
   
+
 while True:
     handshake(client_socket)
     request_type_sent = send_one_message(client_socket, request_type_str)
 
-
     if request_type_str == "list":
         files = recv_one_message(client_socket).decode()
-        print("files: ", files)
-        close_conn(client_socket)
-        
+        print("server files: ", files)
+        close_conn(client_socket)     
 
     else:
         filename_str = str(sys.argv[4])

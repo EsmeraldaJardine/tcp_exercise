@@ -18,7 +18,7 @@ Connection is closed automatically on both ends after request has been handled
 Successful handshake will result in:
  + Client input arguments are checked to ensure correctness
  + Client sends request type (and filename if put/get) to server as per cli arg
- + File names are checked on start to ensure less than 100 characters
+ + File names are checked on start to ensure less than 30 characters
  + Server uses this to determine what action to perform (list, get, put)
  + list requests send equivalent of 'ls server_data' to client to be printed to user
  + if server received 'get' request, server handles it as 'put' for use in common_methods.py's methods
@@ -36,4 +36,4 @@ STABILITY / SECURITY FEATURES
  We tried to abstract many common methods (found in common_methods.py).
  Handshake was implemented in simplistic fashion due to time constraints - priority was to merely ensure adequate connection
  To mimic realistic protocol, we are sending in packets of fixed length (4) so that they can be unpacked correctly on receipt
-    This also enables the recipient to know when datastream has finished and stop listening
+    This the recipient also to knows when datastream has finished (see the recvall function in common utilities)

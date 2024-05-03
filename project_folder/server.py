@@ -1,7 +1,7 @@
 import os
 import sys
 import socket
-from common_methods import close_conn, handle_request, get_path, send_one_message, write_to_file, recv_one_message
+from common_utilities import close_conn, handle_request, get_path, send_one_message, write_to_file, recv_one_message
 
 def parse_port_arg():
 
@@ -68,6 +68,7 @@ try:
             content = recv_one_message(client_socket).decode()
             if "ERR" in content:
                     print(content[3:])
+                    send_one_message(client_socket, "server closed the connection. Exiting...")              
                     break
             file_path = get_path("server_data", False) + "/" + filename_str
             if os.path.exists(file_path):

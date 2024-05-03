@@ -9,7 +9,7 @@
 [-] Files unable to be handled in pythons native file open() cannot be sent!
 [BUG] Occasionally issue with connection closing properly, rerunning server with another port will close the initial port
 To make program as close to how protocol works in real life, we implemented a 3-way handshake to initiate server-client connection
-Client initialises connection by sending "syn" message, server checks receipt of syn, sends "syn/ack", client checks receipt of "ack"
+Client initializes connection by sending "syn" message, server checks receipt of syn, sends "syn/ack", client checks receipt of "ack"
 Failure of handshake will result in closing connection with "Handshake failed" message
 
 Connection is closed automatically on both ends after request has been handled
